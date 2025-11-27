@@ -1,8 +1,17 @@
-const { body, validationResult } = require('express-validator');
+/**
+ * User Data Validation Middleware: Validates signup and user profile data
+ * Protects routes by validating request body fields:
+ * - username: required string
+ * - email: valid email format
+ * - password: minimum 6 characters
+ * - Passes detailed errors to global error handler
+ * 
+ * Routes using this middleware:
+ * - POST /api/v1/auth/signup
+ * - PATCH /api/v1/about/:id
+ */
 
-/* Validation Middleware for:
-- POST /api/v1/auth/signup
-- PATCH /api/v1/about/:id */
+const { body, validationResult } = require('express-validator');
 
 const validateSignup = [
   body('username').isString().withMessage('Username required'),
