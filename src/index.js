@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 
@@ -16,6 +17,17 @@ app.use(helmet());
 app.use(cors(corsOptions));
 
 app.use(express.json());
+
+// Rate Limiter - 100 requests per 15 minutes
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100, 
+  message: {
+    message: 'Too many requests from this IP, please try again later.'
+  }
+});
+
+app.use(globalLimiter);
 
 // Add route level middleware mounting here
 
