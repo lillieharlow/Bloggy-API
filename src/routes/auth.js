@@ -2,14 +2,15 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const validateSignup = require("../middlewares/auth");
 
 const router = express.Router();
 
 // Signup route
-router.post("/signup", async (request, response, next) => {
+router.post("/signup", validateSignup, async (request, response, next) => {
   try {
-    const { email, password } = request.body;
-    const user = new User({ email, password });
+    const { username, email, password } = request.body;
+    const user = new User({ username, email, password });
     await user.save();
     response.status(201).json({
       message: "User created successfully",
