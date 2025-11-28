@@ -2,7 +2,7 @@
  * User Model: Handles user authentication, profiles, and related data
  * Defines user schema with:
  * - Core authentication fields (username, email, password)
- * - Nested About subdocument for user profiles
+ * - Nested profile subdocument for user profiles
  * - Password hashing middleware
  * - JSON transformation for security
  */
@@ -11,8 +11,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 
-// ========== About Sub-Schema =========
-const AboutSchema = mongoose.Schema({
+// ========== Profile Sub-Schema =========
+const ProfileSchema = mongoose.Schema({
   bio: {
     type: String,
     maxLength: [500, 'Bio cannot exceed 500 characters'],
@@ -87,7 +87,7 @@ const UserSchema = mongoose.Schema(
       minlength: [8, 'Password must be at least 8 characters long'],
       select: false,
     },
-    about: AboutSchema,
+    profile: ProfileSchema,
   },
   { timestamps: true }
 );
