@@ -1,10 +1,10 @@
 # Bloggy-API
-Bloggy-API is a simple personal CMS backend built with Node.js, Express, and MongoDB that enables authenticated users to manage blog posts through a RESTful API.
+A simple mutli-user CMS backend built with Node.js, Express, and MongoDB. Bloggy-API enables authenticated users to manage their blog posts and profiles through a RESTful API.
 <hr>
 
 ### Project problem:
 
-- I want a simple way to manage my personal blog — posts, about page — without relying on complex platforms like WordPress.
+Managing a personal blog shouldn't require complex platforms. Bloggy-API provides a lightweight, deployable CMS for posts and author profiles with full authentication support.
 <hr>
 
 ### Database Models:
@@ -14,7 +14,7 @@ Bloggy-API is a simple personal CMS backend built with Node.js, Express, and Mon
     email — string
     password — string
     timestanp - true (created at / updated at)
-    about (optional)
+    profile (optional)
         bio — string (optional)
         profileImage — string (optional)
         socialLinks — object (Twitter, LinkedIn, GitHub) (optional)
@@ -41,14 +41,14 @@ Bloggy-API is a simple personal CMS backend built with Node.js, Express, and Mon
 
 - POST /api/v1/auth/login — login and receive JWT
 
-#### User(About):
-- GET /api/v1/about — view About page (public)
+#### User(profile):
+- GET /api/v1/profile/:id — view one profile page (public)
 
-- POST /api/v1/about — create About info (auth required)
+- POST /api/v1/profile — create profile info (auth required)
 
-- PATCH /api/v1/about/:id — update About info (auth required)
+- PATCH /api/v1/profile/:id — update profile info (auth required)
 
-- DELETE /api/v1/about/:id — delete About info (auth required)
+- DELETE /api/v1/profile/:id — delete profile info (auth required)
 
 #### Posts:
 - GET /api/v1/posts — list all posts (public)
@@ -74,13 +74,17 @@ Bloggy-API is a simple personal CMS backend built with Node.js, Express, and Mon
 #### Public
 - View all posts
 
-- View single post
+- View a single post
 
-- View About page
+- View a single user profile
+
+- View, create and delete a comment
 
 #### User (auth required)
 - Register / login
 
 - Create, update, delete posts
 
-- Create, update, delete About page
+- Create, update, delete profile page
+
+- View, create and delete comments on their own posts
