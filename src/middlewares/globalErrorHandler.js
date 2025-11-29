@@ -7,6 +7,7 @@
  * - Mongoose ValidationError (field-specific errors)  
  * - Express-validator errors (error.errors array)
  * - Generic 500 server errors
+ * - 405 Method Not Allowed (wrong HTTP methods)
  *
  * Used by: app.use(globalErrorHandler) → LAST in index.js
  */
@@ -36,6 +37,14 @@ const globalErrorHandler = ((error, request, response, next) => {
       success: false,
       message: message,
       errors: error.errors
+    });
+  }
+
+  if (error.statusCode === 405 || error.message.includes('not allowed')) {
+    return response.status(405).json({
+      success: false,
+      message: `Method ${request.method} Not Allowed for ${request.originalUrl}`,
+      allowedMethods: ['GET', 'POST', 'PUT', 'DELETE'], // Customize per route
     });
   }
 
