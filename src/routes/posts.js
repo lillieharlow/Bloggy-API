@@ -17,7 +17,7 @@
  */
 
 const express = require('express');
-const auth = require('../middleware/jwtAuth');
+const auth = require('../middlewares/jwtAuth');
 const Post = require('../models/Post');
 
 const router = express.Router();
@@ -41,22 +41,19 @@ router.get('/', async (request, response, next) => {
 // ========== GET /api/v1/posts/profile/:username — Get all posts by a specific username (Public) ==========
 router.get('/profile/:username', async (request, response, next) => {
   try {
-    const posts = await Post.find({
-      'author.username': request.params.username,
-    })
+    const allPosts = await Post.find({})
       .populate('author', 'username')
-      .sort({ createdAt: -1 }); // Newest posts first
+      .sort({ createdAt: -1 });
 
-    if (posts.length === 0) {
-      const error = new Error(`No posts found for ${request.params.username}.`);
-      error.status = 404;
-      return next(error);
-    }
+    const userPosts = allPosts.filter(
+      (post) => post.author.username === request.params.username
+    );
 
     response.status(200).json({
       success: true,
-      count: posts.length,
-      data: posts,
+      count: userPosts.length,
+      username: request.params.username,
+      data: userPosts,
     });
   } catch (error) {
     next(error);
@@ -90,12 +87,23 @@ router.use(auth);
 // ========== POST /api/v1/posts — Create new post (Auth required) ==========
 router.post('/', async (request, response, next) => {
   try {
+    const existingPost = await Post.findOne({
+      title: request.body.title.trim(),
+      author: request.user.userId
+    });
+
+    if (existingPost) {
+      const error = new Error('Post with this title already exists!');
+      error.status = 409;
+      return next(error);
+    }
+
     const post = await Post.create({
       title: request.body.title,
       body: request.body.body,
       image: request.body.image,
       tags: request.body.tags,
-      author: request.user.id,
+      author: request.user.userId,
     });
     response.status(201).json({
       success: true,
@@ -110,22 +118,13 @@ router.post('/', async (request, response, next) => {
 router.patch('/:postId', async (request, response, next) => {
   try {
     const post = await Post.findOneAndUpdate(
-      { _id: request.params.postId, author: request.user.id },
-      {
-        $set: {
-          title: request.body.title,
-          body: request.body.body,
-          image: request.body.image,
-          tags: request.body.tags,
-        },
-      },
-      { new: true, runValidators: true } // Re-validates on update
+      { _id: request.params.postId, author: request.user.userId },
+      { $set: request.body },
+      { new: true, runValidators: true }
     );
 
     if (!post) {
-      const error = new Error(
-        'Post not found / not authorized to make changes.'
-      );
+      const error = new Error('Post not found / not authorized.');
       error.status = 404;
       return next(error);
     }
@@ -144,7 +143,7 @@ router.delete('/:postId', async (request, response, next) => {
   try {
     const post = await Post.findOneAndDelete({
       _id: request.params.postId,
-      author: request.user.id,
+      author: request.user.userId,
     });
     if (!post) {
       const error = new Error('Post not found / not authorized to delete.');

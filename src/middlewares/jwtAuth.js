@@ -8,7 +8,7 @@
  * 
  * Routes using this middleware:
  * - POST/PATCH/DELETE /api/v1/posts/*
- * - POST/PATCH/DELETE /api/v1/about/*
+ * - POST/PATCH/DELETE /api/v1/profile/*
  * - DELETE /api/v1/posts/:postId/comments/:commentId
  */
 

@@ -29,7 +29,15 @@ const globalLimiter = rateLimit({
 
 app.use(globalLimiter);
 
-// Add route level middleware mounting here
+// Routes
+const authRouter = require('./routes/auth');
+app.use('/api/v1/auth', authRouter);
+
+const postsRouter = require('./routes/posts');
+app.use('/api/v1/posts', postsRouter);
+
+const profileRouter = require('./routes/profile');
+app.use('/api/v1/profile', profileRouter);
 
 // Home route
 app.get('/', (request, response) => {
