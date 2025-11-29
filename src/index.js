@@ -41,6 +41,15 @@ const mountRoutes = (app) => {
 
 mountRoutes(app);
 
+// ========== GET / — API Welcome Message (Public) ==========
+router.get('/', (request, response) => {
+  response.status(200).json({
+    success: true,
+    message: 'Hello from Bloggy-API!',
+    version: '1.0.0',
+  });
+});
+
 app.use(globalErrorHandler);
 
 module.exports = app;
