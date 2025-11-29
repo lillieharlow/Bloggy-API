@@ -1,22 +1,21 @@
 /**
  * JWT Authentication Middleware: Verifies JWT tokens from Authorization header
- * Protects routes requiring authenticated users by:
- * - Extracting Bearer token from request header
- * - Verifying token signature with JWT_SECRET
- * - Attaching decoded user data to req.user
- * - Returning 401 for missing/invalid tokens
+ * Grabs token → Verifies → Sets request.user or 401 error
+ *
+ * Skip rule: GET/POST comments (remain public)
  * 
- * Routes using this middleware:
- * - POST/PATCH/DELETE /api/v1/posts/*
- * - POST/PATCH/DELETE /api/v1/profile/*
- * - DELETE /api/v1/posts/:postId/comments/:commentId
+ * Used by:
+ * POST /api/v1/posts
+ * PATCH/DELETE /api/v1/posts/:postId
+ * POST/PATCH/DELETE /api/v1/profile
  */
+
 
 const jwt = require('jsonwebtoken');
 
 const jwtAuth = (request, response, next) => {
-  if (request.path.includes('/comments') && request.method !== 'DELETE') {
-    return next();  // Skip auth for public GET/POST comments
+  if (request.path.includes('/comments') && request.method !== 'DELETE') { // Skip auth for public GET/POST comments
+    return next();
   }
   
   const header = request.headers['authorization'];

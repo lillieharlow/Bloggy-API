@@ -1,7 +1,10 @@
 /**
  * Comment Authorization Middleware
  * 1. Post owner → Delete ANY comment
- * 2. Guest deleteAuthor match
+ * 2. Public deleteAuthor match
+ * 
+ * Used by:
+ * DELETE /api/v1/posts/:postId/comments/:commentId
  */
 
 const mongoose = require('mongoose');

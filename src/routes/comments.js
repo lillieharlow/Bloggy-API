@@ -20,8 +20,10 @@ const Comment = require('../models/Comment');
 
 const router = express.Router({ mergeParams: true });
 
+router.use(validatePostExists); 
+
 // ========== GET /api/v1/posts/:postId/comments — List all comments for a post (Public) ==========
-router.get('/', validatePostExists, async (request, response, next) => {
+router.get('/', async (request, response, next) => {
   try {
     const comments = await Comment.find({ post: request.params.postId }).sort({
       createdAt: -1,

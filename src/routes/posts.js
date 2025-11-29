@@ -27,9 +27,7 @@ const router = express.Router();
 // ========== GET /api/v1/posts — List all posts (Public) ==========
 router.get('/', async (request, response, next) => {
   try {
-    const posts = await Post.find()
-      .populate('author', 'username')
-      .sort({ createdAt: -1 }); // Newest posts first
+    const posts = await Post.find().populate('author', 'username').sort({ createdAt: -1 }); // Newest posts first
     response.status(200).json({
       success: true,
       count: posts.length,
@@ -44,13 +42,9 @@ router.get('/', async (request, response, next) => {
 router.get('/profile/:username', async (request, response, next) => {
   // MongoDB doesn't query populated fields (they exist only after population).
   try {
-    const allPosts = await Post.find({})
-      .populate('author', 'username')
-      .sort({ createdAt: -1 });
+    const allPosts = await Post.find({}).populate('author', 'username').sort({ createdAt: -1 });
 
-    const userPosts = allPosts.filter(
-      (post) => post.author.username === request.params.username
-    );
+    const userPosts = allPosts.filter((post) => post.author.username === request.params.username);
 
     response.status(200).json({
       success: true,
@@ -66,10 +60,7 @@ router.get('/profile/:username', async (request, response, next) => {
 // ========== GET /api/v1/posts/:postId — Get a single post by ID (Public) ==========
 router.get('/:postId', validatePostExists, async (request, response, next) => {
   try {
-    const post = await Post.findById(request.params.postId).populate(
-      'author',
-      'username'
-    );
+    const post = await Post.findById(request.params.postId).populate('author', 'username');
 
     response.status(200).json({
       success: true,
@@ -115,46 +106,38 @@ router.post('/', async (request, response, next) => {
 });
 
 // ========== PATCH /api/v1/posts/:postId — Update existing post (Auth required) ==========
-router.patch(
-  '/:postId',
-  validatePostExists,
-  async (request, response, next) => {
-    try {
-      const post = await Post.findOneAndUpdate(
-        { _id: request.params.postId, author: request.user.userId },
-        { $set: request.body },
-        { new: true, runValidators: true }
-      );
+router.patch('/:postId', validatePostExists, async (request, response, next) => {
+  try {
+    const post = await Post.findOneAndUpdate(
+      { _id: request.params.postId, author: request.user.userId },
+      { $set: request.body },
+      { new: true, runValidators: true }
+    );
 
-      response.status(200).json({
-        success: true,
-        data: post,
-      });
-    } catch (error) {
-      next(error);
-    }
+    response.status(200).json({
+      success: true,
+      data: post,
+    });
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // ========== DELETE /api/v1/posts/:postId — Delete post (Auth required) ==========
-router.delete(
-  '/:postId',
-  validatePostExists,
-  async (request, response, next) => {
-    try {
-      await Post.findOneAndDelete({
-        _id: request.params.postId,
-        author: request.user.userId,
-      });
+router.delete('/:postId', validatePostExists, async (request, response, next) => {
+  try {
+    await Post.findOneAndDelete({
+      _id: request.params.postId,
+      author: request.user.userId,
+    });
 
-      response.status(200).json({
-        success: true,
-        message: 'Post deleted successfully!',
-      });
-    } catch (error) {
-      next(error);
-    }
+    response.status(200).json({
+      success: true,
+      message: 'Post deleted successfully!',
+    });
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 module.exports = router;

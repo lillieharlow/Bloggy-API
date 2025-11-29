@@ -1,94 +1,140 @@
 # Bloggy-API
 A simple mutli-user CMS backend built with Node.js, Express, and MongoDB. Bloggy-API enables authenticated users to manage their blog posts and profiles through a RESTful API.
+
+*Bloggy-API provides RESTful endpoints to create, read, update, delete posts and comments with authentication.*
+
+**Tech Stack:** Node.js · Express · MongoDB · Mongoose · JWT
 <hr>
 
-### Project problem:
-
-Managing a personal blog shouldn't require complex platforms. Bloggy-API provides a lightweight, deployable CMS for posts and author profiles with full authentication support.
+**Live Demo:** [https://bloggy-api-18dl.onrender.com](#)
 <hr>
 
-### Database Models:
+## API Features
+- **RESTful endpoints** for auth, posts, profiles, comments  
+- **JSON** - simple, predictable data formats  
+- **Developer-first** design with clean routes, validation, security  
+- **Production-ready** - Rate limiting, CORS, helmet, error handling  
+- **JWT Authentication** + Guest comments with author verification
 
-#### User:
-    username — string
-    email — string
-    password — string
-    timestanp - true (created at / updated at)
-    profile (optional)
-        bio — string (optional)
-        profileImage — string (optional)
-        socialLinks — object (Twitter, LinkedIn, GitHub) (optional)
+## Table of Contents
+- [Target Audience / User Stories](#target-audience--user-stories)
+- [Quick Setup (30 seconds)](#-quick-setup-30-seconds)
+- [Hardware Requirements](#hardware-requirements)
+- [Dependencies](#dependencies)
+- [Database Models](#database-models)
+- [API Endpoints](#api-endpoints)
+- [MVP Features](#mvp-features)
 
-#### Post:
-    title — string
-    body — string
-    image — string (optional)
-    tags — array of strings (optional)
-    author — reference to User
-    timestanp - true (created at / updated at)
+## Target Audience / User Stories
 
-#### Comment: (for nested routes)
-    post — reference to Post
-    author — string
-    text — string
-    timestanp - true (created at / updated at)
-<hr>
+**Developers:** Building web or mobile apps that need a backend for blogging.  
 
-### API Endpoints
+**Bloggers:** Programmatically managing posts, comments, and user profiles. 
 
-#### Auth:
-- POST /api/v1/auth/register — register user
+**Startups & agencies:** Creating tools for content management and social features.
 
-- POST /api/v1/auth/login — login and receive JWT
+## Quick Set Up
 
-#### User(profile):
-- GET /api/v1/profile/:id — view one profile page (public)
+1. Clone repo
+```
+git clone https://github.com/lillieharlow/Bloggy-API.git
+cd Bloggy-API
+code Bloggy-API
+```
+2. Install dependencies `npm install`.
+4. Create `.env` file. Example:
+```
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/bloggy
+JWT_SECRET=yoursecretkeygoeshere
+```
+5. Start server `npm start`.
 
-- POST /api/v1/profile — create profile info (auth required)
 
-- PATCH /api/v1/profile — update profile info (auth required)
+## Hardware Requirements
+[](https://github.com/lillieharlow/Bloggy-API#hardware-requirements)
+- **Minimum:** 1 CPU, 1 GB RAM  
+- **Recommended:** 2+ CPU, 2 GB RAM  
 
-- DELETE /api/v1/profile — delete profile info (auth required)
+## Dependencies
+[](https://github.com/lillieharlow/Bloggy-API#dependencies)
 
-#### Posts:
-- GET /api/v1/posts — list all posts (public)
+| Library | Purpose |
+|---------|---------|
+| `express` | Web framework |
+| `mongoose` | MongoDB ODM |
+| `jsonwebtoken` | JWT authentication |
+| `bcryptjs` | Password hashing |
+| `express-rate-limit` | Rate limiting |
+| `helmet` | Security headers |
+| `cors` | Cross-origin |
+| `express-validator` | Request validation |
+| `validator.js` | String validation/sanitization |
 
-- GET /api/v1/posts/profile/:username - list all posts by a user (public)
+**Notes:** `package.json` includes dev dependencies, these are not installed with `npm install`.
 
-- GET /api/v1/posts/:postId — get a single post (public)
+### Purpose of Key Dependencies
+[](https://github.com/lillieharlow/Bloggy-API#purpose-of-key-dependencies)
+- **App wiring:** Express, Mongoose  
+- **Auth/Security:** JWT, bcrypt, helmet, rate-limit  
+- **Validation:** Custom middleware  
+- **Production:** CORS, JSON parsing  
 
-- POST /api/v1/posts — create post (auth required)
+### Security Impact
+[](https://github.com/lillieharlow/Bloggy-API#security-impact)
+- Environment variables for secrets (never commit `.env`)  
+- JWT tokens with expiration  
+- Rate limiting prevents DDoS attacks, spam comments, API Abuse   
+- Helmet + CORS security headers  
 
-- PATCH /api/v1/posts/:postId — update post (auth required)
+## API Endpoints
+[](https://github.com/lillieharlow/Bloggy-API#api-endpoints)
+**Local Base URL:** `http://localhost:3000`
+**Deployed Base URL:** `https://bloggy-api-18dl.onrender.com`
 
-- DELETE /api/v1/posts/:postId — delete post (auth required)
+### Auth (/api/v1/auth)
+| Method | Full Endpoint | Auth | Description |
+|--------|---------------|------|-------------|
+| `POST` | `/api/v1/auth/register` | - | Create account |
+| `POST` | `/api/v1/auth/login` | - | JWT login |
 
-#### Comments (nested under posts):
-- GET /api/v1/posts/:postId/comments — list comments
+### Profile (/api/v1/profile)
+| Method | Full Endpoint | Auth | Description |
+|--------|---------------|------|-------------|
+| `GET` | `/api/v1/profile/:id` | - | View profile (public) |
+| `POST` | `/api/v1/profile` | ✅ | Create profile |
+| `PATCH` | `/api/v1/profile` | ✅ | Update profile |
+| `DELETE` | `/api/v1/profile` | ✅ | Delete profile |
 
-- POST /api/v1/posts/:postId/comments — add comment
+### Posts (/api/v1/posts)
+| Method | Full Endpoint | Auth | Description |
+|--------|---------------|------|-------------|
+| `GET` | `/api/v1/posts` | - | List all posts |
+| `GET` | `/api/v1/posts/profile/:username` | - | Posts by user |
+| `GET` | `/api/v1/posts/:postId` | - | Get single post |
+| `POST` | `/api/v1/posts` | ✅ | Create post |
+| `PATCH` | `/api/v1/posts/:postId` | ✅ | Update post |
+| `DELETE` | `/api/v1/posts/:postId` | ✅ | Delete post |
 
-- DELETE /api/v1/posts/:postId/comments/:commentId — delete comment (auth required)
-<hr>
+### Comments (/api/v1/posts/:postId/comments)
+| Method | Full Endpoint | Auth | Description |
+|--------|---------------|------|-------------|
+| `GET` | `/api/v1/posts/:postId/comments` | - | List comments |
+| `POST` | `/api/v1/posts/:postId/comments` | - | Add comment (guest OK) |
+| `DELETE` | `/api/v1/posts/:postId/comments/:commentId` | Author | Delete comment |
 
-### MVP Features
+## MVP Features
+[](https://github.com/lillieharlow/Bloggy-API#mvp-features)
 
-#### Public
+**Public:**
+- Register/login
 - View all posts
+- View posts by user  
+- View single post
+- View user profile
+- View/add comments
 
-- View all posts by one user
-
-- View a single post
-
-- View a single user profile
-
-- View, create a comment
-
-#### User (auth required)
-- Register / login
-
-- Create, update, delete posts
-
-- Create, update, delete profile page
-
-- Delete comments
+**User (auth required):**
+- Create, update and delete posts
+- Create, update and delete profile
+- Delete comments (comment auhtor or post author only)

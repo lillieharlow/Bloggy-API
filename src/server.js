@@ -1,8 +1,24 @@
-/* eslint-disable no-undef */
+/**
+ * Bloggy API Server Entry Point
+ *
+ * Starts MongoDB connection + Express server
+ * Handles graceful startup/shutdown
+ *
+ * Environment:
+ * - PORT: Render auto-assigns (10000+)
+ * - MONGO_URI: MongoDB Atlas connection string
+ * - Local dev: mongodb://localhost:27017/bloggy
+ *
+ * Usage: npm run dev → node --watch src/server.js
+ */
+
 const mongoose = require('mongoose');
 const app = require('./index.js');
 
+
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 3000;
+// eslint-disable-next-line no-undef
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/bloggy';
 
 const startServer = async () => {

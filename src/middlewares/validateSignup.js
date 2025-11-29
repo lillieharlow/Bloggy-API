@@ -6,7 +6,7 @@
  * - password: minimum 6 characters
  * - Passes detailed errors to global error handler
  *
- * Routes using this middleware:
+ * Used by:
  * - POST /api/v1/auth/signup
  * - PATCH /api/v1/profile/:id
  */
@@ -21,10 +21,10 @@ const validateSignup = [
   (request, response, next) => {
     const errors = validationResult(request);
     if (!errors.isEmpty()) {
-      const error = new Error('Validation failed'); // Create a new error object
+      const error = new Error('Validation failed');
       error.status = 400;
       error.errors = errors.array();
-      return next(error); // Pass error to Global Error Handler
+      return next(error);
     }
     next();
   },
