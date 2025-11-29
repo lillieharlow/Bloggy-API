@@ -15,6 +15,10 @@
 const jwt = require('jsonwebtoken');
 
 const jwtAuth = (request, response, next) => {
+  if (request.path.includes('/comments') && request.method !== 'DELETE') {
+    return next();  // Skip auth for public GET/POST comments
+  }
+  
   const header = request.headers['authorization'];
   if (!header) return response.status(401).json({ error: 'Missing token' });
 

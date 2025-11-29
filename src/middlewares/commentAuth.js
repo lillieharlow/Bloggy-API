@@ -1,14 +1,12 @@
 /**
  * Comment Authorization Middleware
- *
- * Checks ownership for comment deletion/editing:
- * 1. JWT users: Matches req.user.username === comment.author
- * 2. Guest users: Matches req.body.deleteAuthor === comment.author
- * 3. Blocks unauthorized access
+ * 1. Post owner → Delete ANY comment
+ * 2. Guest deleteAuthor match
  */
 
 const mongoose = require('mongoose');
 const Comment = require('../models/Comment');
+const Post = require('../models/Post');
 
 const commentAuth = async (request, response, next) => {
   try {
@@ -25,11 +23,22 @@ const commentAuth = async (request, response, next) => {
       return next(error);
     }
 
-    const isJwtOwner = request.user && request.user.username === comment.author;
-    const isGuestOwner = request.body.deleteAuthor === comment.author;
+    if (request.user) {
+      const post = await Post.findById(postId).select('author');
+      if (post?.author.toString() === request.user.userId) {
+        request.comment = comment;
+        return next();
+      }
+    }
 
-    if (!isJwtOwner && !isGuestOwner) {
-      const error = new Error('Not authorized to delete this comment.');
+    if (!request.body.deleteAuthor) {
+      const error = new Error('deleteAuthor required');
+      error.status = 400;
+      return next(error);
+    }
+
+    if (request.body.deleteAuthor !== comment.author) {
+      const error = new Error('Name does not match comment author');
       error.status = 403;
       return next(error);
     }

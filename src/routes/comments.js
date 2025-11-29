@@ -38,14 +38,20 @@ router.get('/', validatePostExists, async (request, response, next) => {
 });
 
 // ========== POST /api/v1/posts/:postId/comments — Create a new comment (Public) ==========
-router.post('/', validatePostExists, async (request, response, next) => {
+router.post('/', async (request, response, next) => {
   try {
-    const author = request.user?.username || request.body.author || 'Anonymous';
+    const { author, text } = request.body;
+
+    if (!author || !author.trim()) {
+      const error = new Error('Author name required');
+      error.status = 400;
+      return next(error);
+    }
 
     const existingComment = await Comment.findOne({
       post: request.params.postId,
-      author: author,
-      text: request.body.text?.trim(),
+      author: author.trim(),
+      text: text?.trim(),
     });
 
     if (existingComment) {
@@ -56,8 +62,8 @@ router.post('/', validatePostExists, async (request, response, next) => {
 
     const comment = await Comment.create({
       post: request.params.postId,
-      author: author,
-      text: request.body.text,
+      author: author.trim(),
+      text: text?.trim() || '',
     });
 
     response.status(201).json({

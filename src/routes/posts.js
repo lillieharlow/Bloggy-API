@@ -80,9 +80,9 @@ router.get('/:postId', validatePostExists, async (request, response, next) => {
   }
 });
 
-router.use('/:postId/comments', commentsRoutes);
-
 router.use(auth);
+
+router.use('/:postId/comments', commentsRoutes);
 
 // ========== POST /api/v1/posts — Create new post (Auth required) ==========
 router.post('/', async (request, response, next) => {
