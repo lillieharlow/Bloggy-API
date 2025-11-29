@@ -31,6 +31,15 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+// ========== GET / — API Welcome Message (Public) ==========
+app.get('/', (request, response) => {
+  response.status(200).json({
+    success: true,
+    message: 'Hello from Bloggy-API!',
+    version: '1.0.0',
+  });
+});
+
 const mountRoutes = (app) => {
   app.use('/api/v1/utils', utilsRoutes);
   app.use('/api/v1/auth', authRouter);
@@ -40,15 +49,6 @@ const mountRoutes = (app) => {
 };
 
 mountRoutes(app);
-
-// ========== GET / — API Welcome Message (Public) ==========
-router.get('/', (request, response) => {
-  response.status(200).json({
-    success: true,
-    message: 'Hello from Bloggy-API!',
-    version: '1.0.0',
-  });
-});
 
 app.use(globalErrorHandler);
 
