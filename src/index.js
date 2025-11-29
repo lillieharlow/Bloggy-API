@@ -39,6 +39,9 @@ app.use('/api/v1/posts', postsRouter);
 const profileRouter = require('./routes/profile');
 app.use('/api/v1/profile', profileRouter);
 
+const commentsRouter = require('./routes/comments');
+app.use('/api/v1/posts/:postId/comments', commentsRouter);
+
 // Home route
 app.get('/', (request, response) => {
   response.json({

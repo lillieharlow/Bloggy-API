@@ -24,7 +24,7 @@ const CommentSchema = mongoose.Schema(
       maxLength: [50, 'Author name must be at most 50 characters long'],
       validate: {
         validator: (value) =>
-          validator.isAlphanumeric(value.replace(/-/g, ''), 'en-US'),
+          validator.isAlphanumeric(value.replace(/-/g, ''), 'en-US', { ignore: ' ' }),
         message:
           'Author name can only contain alphanumeric characters and dashes',
       },

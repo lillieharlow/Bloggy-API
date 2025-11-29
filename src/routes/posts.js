@@ -18,7 +18,9 @@
 
 const express = require('express');
 const auth = require('../middlewares/jwtAuth');
+const validatePostExists = require('../middlewares/validatePostExists');
 const Post = require('../models/Post');
+const commentsRoutes = require('./comments');
 
 const router = express.Router();
 
@@ -40,6 +42,7 @@ router.get('/', async (request, response, next) => {
 
 // ========== GET /api/v1/posts/profile/:username — Get all posts by a specific username (Public) ==========
 router.get('/profile/:username', async (request, response, next) => {
+  // MongoDB doesn't query populated fields (they exist only after population).
   try {
     const allPosts = await Post.find({})
       .populate('author', 'username')
@@ -61,17 +64,12 @@ router.get('/profile/:username', async (request, response, next) => {
 });
 
 // ========== GET /api/v1/posts/:postId — Get a single post by ID (Public) ==========
-router.get('/:postId', async (request, response, next) => {
+router.get('/:postId', validatePostExists, async (request, response, next) => {
   try {
     const post = await Post.findById(request.params.postId).populate(
       'author',
       'username'
     );
-    if (!post) {
-      const error = new Error('Post not found.');
-      error.status = 404;
-      return next(error);
-    }
 
     response.status(200).json({
       success: true,
@@ -82,6 +80,8 @@ router.get('/:postId', async (request, response, next) => {
   }
 });
 
+router.use('/:postId/comments', commentsRoutes);
+
 router.use(auth);
 
 // ========== POST /api/v1/posts — Create new post (Auth required) ==========
@@ -89,7 +89,7 @@ router.post('/', async (request, response, next) => {
   try {
     const existingPost = await Post.findOne({
       title: request.body.title.trim(),
-      author: request.user.userId
+      author: request.user.userId,
     });
 
     if (existingPost) {
@@ -115,49 +115,46 @@ router.post('/', async (request, response, next) => {
 });
 
 // ========== PATCH /api/v1/posts/:postId — Update existing post (Auth required) ==========
-router.patch('/:postId', async (request, response, next) => {
-  try {
-    const post = await Post.findOneAndUpdate(
-      { _id: request.params.postId, author: request.user.userId },
-      { $set: request.body },
-      { new: true, runValidators: true }
-    );
+router.patch(
+  '/:postId',
+  validatePostExists,
+  async (request, response, next) => {
+    try {
+      const post = await Post.findOneAndUpdate(
+        { _id: request.params.postId, author: request.user.userId },
+        { $set: request.body },
+        { new: true, runValidators: true }
+      );
 
-    if (!post) {
-      const error = new Error('Post not found / not authorized.');
-      error.status = 404;
-      return next(error);
+      response.status(200).json({
+        success: true,
+        data: post,
+      });
+    } catch (error) {
+      next(error);
     }
-
-    response.status(200).json({
-      success: true,
-      data: post,
-    });
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 // ========== DELETE /api/v1/posts/:postId — Delete post (Auth required) ==========
-router.delete('/:postId', async (request, response, next) => {
-  try {
-    const post = await Post.findOneAndDelete({
-      _id: request.params.postId,
-      author: request.user.userId,
-    });
-    if (!post) {
-      const error = new Error('Post not found / not authorized to delete.');
-      error.status = 404;
-      return next(error);
-    }
+router.delete(
+  '/:postId',
+  validatePostExists,
+  async (request, response, next) => {
+    try {
+      await Post.findOneAndDelete({
+        _id: request.params.postId,
+        author: request.user.userId,
+      });
 
-    response.status(200).json({
-      success: true,
-      message: 'Post deleted successfully!',
-    });
-  } catch (error) {
-    next(error);
+      response.status(200).json({
+        success: true,
+        message: 'Post deleted successfully!',
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 module.exports = router;

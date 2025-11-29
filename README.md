@@ -82,7 +82,7 @@ Managing a personal blog shouldn't require complex platforms. Bloggy-API provide
 
 - View a single user profile
 
-- View, create and delete a comment
+- View, create a comment
 
 #### User (auth required)
 - Register / login
@@ -91,4 +91,4 @@ Managing a personal blog shouldn't require complex platforms. Bloggy-API provide
 
 - Create, update, delete profile page
 
-- Delete comments on their posts
+- Delete comments
