@@ -27,14 +27,6 @@ router.get('/databaseHealth', (request, response) => {
 
 // ========== ALL /* — Catch-all 404 Handler ==========
 router.all(/.*/, (request, response) => {
-  if (request.route) {
-    return response.status(405).json({
-      success: false,
-      message: `Method ${request.method} not allowed for ${request.originalUrl}`,
-      attemptedPath: request.path,
-    });
-  }
-
   response.status(404).json({
     success: false,
     message: 'No route with that path found!',
