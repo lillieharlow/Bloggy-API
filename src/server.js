@@ -16,7 +16,9 @@ const mongoose = require('mongoose');
 const app = require('./index.js');
 
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 3000;
+// eslint-disable-next-line no-undef
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/bloggy';
 
 const startServer = async () => {
