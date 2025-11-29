@@ -34,7 +34,6 @@ app.use(limiter);
 // ========== GET / — API Welcome Message (Public) ==========
 app.get('/', (request, response) => {
   response.status(200).json({
-    success: true,
     message: 'Hello from Bloggy-API!',
     version: '1.0.0',
   });
