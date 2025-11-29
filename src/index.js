@@ -32,8 +32,8 @@ const limiter = rateLimit({
 app.use(limiter);
 
 const mountRoutes = (app) => {
-  app.use('/api/v1/auth', authRouter);
   app.use('/api/v1/utils', utilsRoutes);
+  app.use('/api/v1/auth', authRouter);
   app.use('/api/v1/posts', postsRouter);
   app.use('/api/v1/profile', profileRouter);
   app.use('/api/v1/posts/:postId/comments', commentsRouter);
