@@ -46,12 +46,14 @@ Managing a personal blog shouldn't require complex platforms. Bloggy-API provide
 
 - POST /api/v1/profile — create profile info (auth required)
 
-- PATCH /api/v1/profile/:id — update profile info (auth required)
+- PATCH /api/v1/profile — update profile info (auth required)
 
-- DELETE /api/v1/profile/:id — delete profile info (auth required)
+- DELETE /api/v1/profile — delete profile info (auth required)
 
 #### Posts:
 - GET /api/v1/posts — list all posts (public)
+
+- GET /api/v1/posts/profile/:username - list all posts by a user (public)
 
 - GET /api/v1/posts/:postId — get a single post (public)
 
@@ -74,6 +76,8 @@ Managing a personal blog shouldn't require complex platforms. Bloggy-API provide
 #### Public
 - View all posts
 
+- View all posts by one user
+
 - View a single post
 
 - View a single user profile
@@ -87,4 +91,4 @@ Managing a personal blog shouldn't require complex platforms. Bloggy-API provide
 
 - Create, update, delete profile page
 
-- View, create and delete comments on their own posts
+- Delete comments on their posts
