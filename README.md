@@ -6,7 +6,7 @@ A simple mutli-user, headless Content Management System (CMS) backend built with
 **Tech Stack:** Node.js · Express · MongoDB · Mongoose · JWT
 <hr>
 
-**Live Demo:** [https://bloggy-api-18dl.onrender.com](#)
+**Live Demo:** https://bloggy-api-18dl.onrender.com
 <hr>
 
 ## API Features
