@@ -18,14 +18,6 @@ const globalErrorHandler = ((error, request, response, next) => {
     return next(error);
   }
 
-  if (error.statusCode === 405 || error.message.includes('not allowed')) {
-    return response.status(405).json({
-      success: false,
-      message: `Method ${request.method} Not Allowed for ${request.originalUrl}`,
-      allowedMethods: ['GET', 'POST', 'PUT', 'DELETE'], // Customize per route
-    });
-  }
-
   const status = error.status || 500;
   let message = error.message || 'Internal Server Error';
   if (error.name === 'ValidationError') {

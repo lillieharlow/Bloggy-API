@@ -1,5 +1,5 @@
 # Bloggy-API
-A simple mutli-user CMS backend built with Node.js, Express, and MongoDB. Bloggy-API enables authenticated users to manage their blog posts and profiles through a RESTful API.
+A simple mutli-user, headless Content Management System (CMS) backend built with Node.js, Express, and MongoDB. Bloggy-API enables authenticated users to manage their blog posts and profiles through a RESTful API.
 
 *Bloggy-API provides RESTful endpoints to create, read, update, delete posts and comments with authentication.*
 
