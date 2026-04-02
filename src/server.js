@@ -17,9 +17,9 @@ const app = require('./index.js');
 
 
 // eslint-disable-next-line no-undef
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 // eslint-disable-next-line no-undef
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/bloggy';
+const MONGODB_URI = process.env.MONGODB_URI;
 
 const startServer = async () => {
   try {
