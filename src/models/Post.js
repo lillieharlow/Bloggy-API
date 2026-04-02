@@ -26,7 +26,7 @@ const PostSchema = mongoose.Schema(
     image: {
       type: String,
       validate: {
-        validator: function (value) {
+        validator: (value) => {
           if (!value) return true;
           return (
             validator.isURL(value, { require_protocol: true }) &&
@@ -39,7 +39,7 @@ const PostSchema = mongoose.Schema(
     tags: {
       type: [String],
       validate: {
-        validator: function (value) {
+        validator: (value) => {
           if (!value) return true;
           if (!Array.isArray(value)) return false;
           if (value.length > 10) return false;

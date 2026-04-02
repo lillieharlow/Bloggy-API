@@ -18,7 +18,7 @@ const jwtAuth = (request, response, next) => {
     return next();
   }
   
-  const header = request.headers['authorization'];
+  const header = request.headers.authorization;
   if (!header) return response.status(401).json({ error: 'Missing token' });
 
   const token = header.split(' ')[1];

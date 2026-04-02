@@ -13,13 +13,13 @@
  */
 
 
-const globalErrorHandler = ((error, request, response, next) => {
+const globalErrorHandler = ((error, _request, response, next) => {
   if (response.headersSent) {
     return next(error);
   }
 
   const status = error.status || 500;
-  let message = error.message || 'Internal Server Error';
+  const message = error.message || 'Internal Server Error';
   if (error.name === 'ValidationError') {
     const errors = Object.values(error.errors).map(err => ({
       message: err.message,
@@ -44,7 +44,7 @@ const globalErrorHandler = ((error, request, response, next) => {
   console.error(error.stack);
   response.status(status).json({
     success: false,
-    error: message,
+    message,
     name: error.name
   });
 });

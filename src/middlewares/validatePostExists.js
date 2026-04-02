@@ -15,7 +15,7 @@
 
 const Post = require('../models/Post');
 
-const validatePostExists = async (request, response, next) => {
+const validatePostExists = async (request, _response, next) => {
   try {
     const post = await Post.findById(request.params.postId);
     if (!post) {
@@ -23,6 +23,7 @@ const validatePostExists = async (request, response, next) => {
       error.status = 404;
       return next(error);
     }
+    request.post = post;
     next();
   } catch (error) {
     next(error);

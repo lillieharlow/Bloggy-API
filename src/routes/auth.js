@@ -42,7 +42,7 @@ router.post('/login', async (request, response, next) => {
     const { email, password } = request.body;
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      const error = new Error('Email required');
+      const error = new Error('Invalid credentials');
       error.status = 401;
       return next(error);
     }

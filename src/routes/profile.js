@@ -66,7 +66,7 @@ router.post('/', async (request, response, next) => {
 
     if (user.profile) {
       const error = new Error('Profile already exists. Use PATCH to update.');
-      error.status = 400;
+      error.status = 409;
       return next(error);
     }
 

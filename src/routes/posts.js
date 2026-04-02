@@ -25,7 +25,7 @@ const commentsRoutes = require('./comments');
 const router = express.Router();
 
 // ========== GET /api/v1/posts — List all posts (Public) ==========
-router.get('/', async (request, response, next) => {
+router.get('/', async (_request, response, next) => {
   try {
     const posts = await Post.find().populate('author', 'username').sort({ createdAt: -1 }); // Newest posts first
     response.status(200).json({
@@ -60,11 +60,11 @@ router.get('/profile/:username', async (request, response, next) => {
 // ========== GET /api/v1/posts/:postId — Get a single post by ID (Public) ==========
 router.get('/:postId', validatePostExists, async (request, response, next) => {
   try {
-    const post = await Post.findById(request.params.postId).populate('author', 'username');
+    await request.post.populate('author', 'username');
 
     response.status(200).json({
       success: true,
-      data: post,
+      data: request.post,
     });
   } catch (error) {
     next(error);
@@ -78,8 +78,15 @@ router.use('/:postId/comments', commentsRoutes);
 // ========== POST /api/v1/posts — Create new post (Auth required) ==========
 router.post('/', async (request, response, next) => {
   try {
+    const title = request.body.title?.trim();
+    if (!title) {
+      const error = new Error('Title is required');
+      error.status = 400;
+      return next(error);
+    }
+
     const existingPost = await Post.findOne({
-      title: request.body.title.trim(),
+      title,
       author: request.user.userId,
     });
 
@@ -90,7 +97,7 @@ router.post('/', async (request, response, next) => {
     }
 
     const post = await Post.create({
-      title: request.body.title,
+      title,
       body: request.body.body,
       image: request.body.image,
       tags: request.body.tags,
@@ -114,6 +121,12 @@ router.patch('/:postId', validatePostExists, async (request, response, next) => 
       { new: true, runValidators: true }
     );
 
+    if (!post) {
+      const error = new Error('Not authorized to update this post.');
+      error.status = 403;
+      return next(error);
+    }
+
     response.status(200).json({
       success: true,
       data: post,
@@ -126,10 +139,16 @@ router.patch('/:postId', validatePostExists, async (request, response, next) => 
 // ========== DELETE /api/v1/posts/:postId — Delete post (Auth required) ==========
 router.delete('/:postId', validatePostExists, async (request, response, next) => {
   try {
-    await Post.findOneAndDelete({
+    const deletedPost = await Post.findOneAndDelete({
       _id: request.params.postId,
       author: request.user.userId,
     });
+
+    if (!deletedPost) {
+      const error = new Error('Not authorized to delete this post.');
+      error.status = 403;
+      return next(error);
+    }
 
     response.status(200).json({
       success: true,
