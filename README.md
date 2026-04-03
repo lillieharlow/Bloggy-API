@@ -6,9 +6,6 @@ A simple mutli-user, headless Content Management System (CMS) backend built with
 **Tech Stack:** Node.js · Express · MongoDB · Mongoose · JWT
 <hr>
 
-**Live Demo:** https://bloggy-api-18dl.onrender.com
-<hr>
-
 ## API Features
 - **RESTful endpoints** for auth, posts, profiles, comments  
 - **JSON** - simple, predictable data formats  
@@ -42,12 +39,7 @@ cd Bloggy-API
 code Bloggy-API
 ```
 2. Install dependencies `npm install`.
-4. Create `.env` file. Example:
-```
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017/bloggy
-JWT_SECRET=yoursecretkeygoeshere
-```
+4. Create `.env` file. See `.env.example`.
 5. Start server `npm start`.
 
 
