@@ -280,22 +280,26 @@ jobs:
 
 Include these screenshots in order:
 
-1. Successful CI workflow run - shows test job and artifact upload
+1. Successful CI workflow run: shows test job and artifact upload
    ![screenshot of successful CI workflow run](./screenshots/ci-success.png)
 
-2. Artifact download pane - shows test-results.xml
-   ![screenshot of test artifact in GitHub Actions](./screenshots/test-artifact.png)
+2. Successful test run: shows all test run and pass
+   ![screenshot of successful test run and pass](./screenshots/test-success.png)
 
-3. Successful Deploy workflow run - shows ECR push and ECS update
+3. Artifact download pane: shows test-results.xml
+   ![screenshot of test artifact in GitHub Actions](./screenshots/test-artifact-1.png)
+   ![screenshot of test artifact in test-results.xml](./screenshots/test-artifact-2.png)
+
+4. Successful Deploy workflow run: shows ECR push and ECS update
    ![screenshot of deploy workflow run](./screenshots/deploy-success.png)
 
-4. AWS ECR UI - shows latest image tag
+5. AWS ECR UI: shows latest image tag
    ![screenshot of AWS ECR repo with latest image](./screenshots/ecr-latest.png)
 
-5. AWS ECS Service UI - shows updated deployment
+6. AWS ECS Service UI: shows updated deployment
    ![screenshot of ECS service running bloggy-api](./screenshots/ecs-service.png)
 
-6. Optional: CloudWatch logs for ECS task
+7. CloudWatch logs: for ECS task
    ![screenshot of cloudwatch logs](./screenshots/cloudwatch.png)
 
 ## Architecture Diagram
