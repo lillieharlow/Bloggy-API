@@ -33,6 +33,7 @@ jobs:
       - run: npm test -- --ci --reporters=default --reporters=jest-junit
         env:
           JEST_JUNIT_OUTPUT: test-results.xml
+      - run: ls -lh
 
       # Upload test results as an artifact
       - uses: actions/upload-artifact@v4
