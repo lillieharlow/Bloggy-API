@@ -18,6 +18,7 @@ jobs:
     env:
       MONGODB_TEST_URI: mongodb://localhost:27017/bloggy_test
       JWT_SECRET: test-secret
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
@@ -29,7 +30,9 @@ jobs:
       # Run tests, create JUnit logs for test results
       - run: |
           npm install jest-junit --no-save
-          npm test -- --ci --reporters=default --reporters=jest-junit --outputFile=test-results.xml
+      - run: npm test -- --ci --reporters=default --reporters=jest-junit
+        env:
+          JEST_JUNIT_OUTPUT: test-results.xml
 
       # Upload test results as an artifact
       - uses: actions/upload-artifact@v4
