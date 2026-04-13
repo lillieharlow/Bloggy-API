@@ -30,7 +30,7 @@ jobs:
       # Run tests, create JUnit logs for test results
       - run: |
           npm install jest-junit --no-save
-      - run: npm test -- --ci --reporters=default --reporters=jest-junit
+      - run: npm test -- --ci
         env:
           JEST_JUNIT_OUTPUT: test-results.xml
       - run: ls -lh
