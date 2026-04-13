@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '15 3 * * 0'  # Every Sunday at 1:15pm Me;bourne (AEST/AEDT)
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - run: npm ci
+
+      # Run tests, create JUnit logs for test results
+      - run: |
+          npm install jest-junit --no-save
+          npm test -- --ci --reporters=default --reporters=jest-junit --outputFile=test-results.xml
+
+      # Upload test results as an artifact
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: test-results.xml
