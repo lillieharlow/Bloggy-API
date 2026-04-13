@@ -10,6 +10,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
     env:
       MONGODB_TEST_URI: mongodb://localhost:27017/bloggy_test
       JWT_SECRET: test-secret

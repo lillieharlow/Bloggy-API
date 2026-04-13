@@ -3,6 +3,9 @@
 // - POST /api/v1/auth/login succeeds for a registered user
 // - POST /api/v1/auth/signup rejects duplicate email
 
+/* global jest */
+jest.setTimeout(20000);
+
 /* eslint-disable no-undef */
 const mongoose = require('mongoose');
 const request = require('supertest');

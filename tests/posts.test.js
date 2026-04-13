@@ -3,6 +3,9 @@
 // - GET /api/v1/posts returns 200 with expected response shape
 // - Full post lifecycle: create, retrieve, and delete with auth
 
+/* global jest */
+jest.setTimeout(20000);
+
 /* eslint-disable no-undef */
 const mongoose = require('mongoose');
 const request = require('supertest');
