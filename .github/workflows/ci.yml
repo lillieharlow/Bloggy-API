@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
   schedule:
-    - cron: '15 3 * * 0'  # Every Sunday at 1:15pm Me;bourne (AEST/AEDT)
+    - cron: '15 3 * * 0'  # Every Sunday at 1:15pm Melbourne (AEST/AEDT)
 
 jobs:
   test:
@@ -28,11 +28,9 @@ jobs:
       - run: npm ci
 
       # Run tests, create JUnit logs for test results
-      - run: |
-          npm install jest-junit --no-save
+      - run: npm install jest-junit --no-save
+
       - run: npm test -- --ci
-        env:
-          JEST_JUNIT_OUTPUT: test-results.xml
       - run: ls -lh
 
       # Upload test results as an artifact
