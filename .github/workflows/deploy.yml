@@ -7,39 +7,48 @@ on:
       - completed
   schedule:
     - cron: '30 4 * * 1' # Every Monday at 04:30 UTC
-  workflow_dispatch:  # manual trigger
+  workflow_dispatch:  # Manual trigger for testing
 
 jobs:
   deploy:
-    # Only run if CI succeeded or if event is schedule/manual
+    # Only run if CI succeeded or event is schedule/manual
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+      ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
     steps:
-      - uses: actions/checkout@v4
+      # Download exact commit that triggered CI
+      - name: Checkout source code for triggering commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
-      - uses: aws-actions/configure-aws-credentials@v4
+      # Configu AWS CLI creds and region for all AWS CLI commands
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      # Authenticate Docker with Amazon ECR
       - name: Login to Amazon ECR
-        id: login-ecr
         run: |
           aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
 
+      # Build Docker image using latest code
+      # Tag with unique commit SHA, then push to ECR
       - name: Build, tag, and push Docker image to ECR
         run: |
-          IMAGE="$ECR_REGISTRY/bloggy-api:${GITHUB_SHA}"
+          IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA}"
           docker build -t $IMAGE .
           docker push $IMAGE
 
+      # Trigger ECS to pull new image and redeploy
       - name: Deploy to ECS
         run: |
-          # Example using AWS CLI; update to match your ECS service/task definition logic
           aws ecs update-service \
             --cluster ${{ secrets.ECS_CLUSTER }} \
             --service ${{ secrets.ECS_SERVICE }} \

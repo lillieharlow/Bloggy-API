@@ -6,6 +6,7 @@ on:
   pull_request:
   schedule:
     - cron: '15 3 * * 0'  # Every Sunday at 1:15pm Melbourne (AEST/AEDT)
+  workflow_dispatch:  # manual trigger
 
 jobs:
   test:
@@ -19,21 +20,36 @@ jobs:
       MONGODB_TEST_URI: mongodb://localhost:27017/bloggy_test
       JWT_SECRET: test-secret
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v3
         with:
           node-version: 24
+          cache: 'npm'
 
       - run: npm ci
 
-      # Run tests, create JUnit logs for test results
+      # Linting
+      - run: npm run lint
+
+      # Install jest-junit for JUnit test reporting
       - run: npm install jest-junit --no-save
 
-      - run: npm test -- --ci
+      # Run jest tests, output junit xml
+      - run: npm test -- --ci --testResultsProcessor=jest-junit
 
-      # Upload test results as an artifact
+      # Upload test results as artifact
       - uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: test-results.xml
+
+      # Coverage
+      - run: npm run test:coverage
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/

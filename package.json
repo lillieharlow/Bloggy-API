@@ -4,10 +4,11 @@
   "description": "Bloggy-API is a simple personal CMS backend built with Node.js, Express, and MongoDB that enables authenticated users to manage blog posts through a RESTful API. <hr>",
   "main": "index.js",
   "scripts": {
-    "start": "node --env-file-if-exists=.env src/server.js",
-    "dev": "node --watch --env-file-if-exists=.env src/server.js",
-    "lint": "node ./node_modules/eslint/bin/eslint.js src/**/*.js",
-    "test": "node ./node_modules/jest/bin/jest.js"
+    "start": "dotenv -e .env -- node src/server.js",
+    "dev": "dotenv -e .env -- node --watch src/server.js",
+    "lint": "eslint .",
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -34,9 +35,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.1",
     "globals": "^16.5.0",
     "jest": "^30.3.0",
+    "jest-junit": "^16.0.0",
     "prettier": "^3.6.2",
     "supertest": "^7.1.4"
   }
