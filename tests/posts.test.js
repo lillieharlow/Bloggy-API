@@ -56,8 +56,17 @@ describe('Posts routes', () => {
     expect(createResponse.body.success).toBe(true);
     expect(createResponse.body.data._id).toBeDefined();
 
+    // Fix for Mongo write propagation delays
     const postId = createResponse.body.data._id;
-    await Post.findById(postId); // Wait for post to exist
+
+    let attempts = 0;
+    while (attempts < 10) {
+      const found = await Post.findById(postId);
+      if (found) break;
+      await new Promise((r) => setTimeout(r, 50));
+      attempts++;
+    }
+    if (attempts === 10) throw new Error('Post not visible in DB after POST');
 
     const getResponse = await request(app).get(`/api/v1/posts/${postId}`);
 
