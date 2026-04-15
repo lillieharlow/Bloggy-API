@@ -57,6 +57,7 @@ describe('Posts routes', () => {
     expect(createResponse.body.data._id).toBeDefined();
 
     const postId = createResponse.body.data._id;
+    await Post.findById(postId); // Wait for post to exist
 
     const getResponse = await request(app).get(`/api/v1/posts/${postId}`);
 
