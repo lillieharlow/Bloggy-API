@@ -4,7 +4,7 @@ A simple multi-user, headless Content Management System (CMS) backend built with
 
 Bloggy-API provides RESTful endpoints to create, read, update, and delete posts and comments with authentication.
 
-Tech Stack: Node.js · Express · MongoDB · Mongoose · JWT
+Tech Stack: Node.js · Express · MongoDB Atlas · Mongoose · JWT
 
 <hr>
 
@@ -197,7 +197,7 @@ Both workflows require GitHub secrets for AWS and app credentials:
 | ECR_REGISTRY          | URI of the AWS ECR repository           |
 | ECS_CLUSTER           | ECS cluster name                        |
 | ECS_SERVICE           | ECS Fargate service name                |
-| MONGODB_URI           | MongoDB or DocumentDB connection string |
+| MONGODB_URI           | MongoDB Atlas connection string |
 | JWT_SECRET            | Secret key for JWT auth                 |
 
 To set these: GitHub repository Settings > Secrets and variables > Actions.
@@ -208,59 +208,21 @@ A sample file is provided as .env.example. Do not commit real secrets.
 
 ```env
 PORT=           # e.g. 7000
-MONGODB_URI=    # Your full MongoDB or DocumentDB URI
+MONGODB_URI=    # Your full MongoDB Atlas connection URI
 JWT_SECRET=     # Secret key for signing JWTs
 ```
 
 Update .env with your real values for local development and testing.
 
-### Example GitHub Actions Deploy Workflow (deploy.yml)
+### Deployment Workflow (deploy.yml)
 
-```yaml
-name: Deploy to AWS ECS
+Deployment workflow: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
 
-on:
-	workflow_run:
-		workflows: ["CI"]
-		types:
-			- completed
-	schedule:
-		- cron: '30 4 * * 1'
-	workflow_dispatch:
-
-jobs:
-	deploy:
-		if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
-		runs-on: ubuntu-latest
-		env:
-			AWS_REGION: ${{ secrets.AWS_REGION }}
-			ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-		steps:
-			- uses: actions/checkout@v4
-
-			- uses: aws-actions/configure-aws-credentials@v4
-				with:
-					aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-					aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-					aws-region: ${{ secrets.AWS_REGION }}
-
-			- name: Login to Amazon ECR
-				run: |
-					aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
-
-			- name: Build, tag, and push Docker image to ECR
-				run: |
-					IMAGE="$ECR_REGISTRY/bloggy-api:${GITHUB_SHA}"
-					docker build -t $IMAGE .
-					docker push $IMAGE
-
-			- name: Deploy to ECS
-				run: |
-					aws ecs update-service \
-						--cluster ${{ secrets.ECS_CLUSTER }} \
-						--service ${{ secrets.ECS_SERVICE }} \
-						--force-new-deployment
-```
+This workflow:
+- Runs automatically after successful CI on the main branch, on manual dispatch, or on a scheduled basis.
+- Builds and tags a new Docker image for Bloggy-API.
+- Pushes the image to AWS ECR.
+- Updates the running ECS service to deploy the latest image version.
 
 ### Testing and Logs
 
@@ -313,5 +275,7 @@ GitHub Actions: natively integrated with GitHub, supports reusable workflows and
 AWS ECS Fargate with ECR: reduces infrastructure management, improves security through IAM role-based access, and supports scalable container deployments with lower operational overhead.
 
 AWS CloudWatch: integrates directly with ECS, simplifies troubleshooting during deployments, and keeps runtime logs centralised.
+
+MongoDB Atlas: Free cloud-hosted database service, secure (TLS-encrypted) connection with AWS ECS containers.
 
 This stack aligns with project goals: automated testing, persistent build and test artifacts, secure secret handling, and repeatable production deployment.
