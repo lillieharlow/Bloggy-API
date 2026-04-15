@@ -52,6 +52,8 @@ describe('Posts routes', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ title: 'Valid Post Title', body: 'A valid post body for testing.' });
 
+    console.log('Create:', createResponse.body);
+
     expect(createResponse.status).toBe(201);
     expect(createResponse.body.success).toBe(true);
     expect(createResponse.body.data._id).toBeDefined();
@@ -59,6 +61,7 @@ describe('Posts routes', () => {
     const postId = createResponse.body.data._id;
 
     const getResponse = await request(app).get(`/api/v1/posts/${postId}`);
+    console.log('GET:', getResponse.status, getResponse.body);
 
     expect(getResponse.status).toBe(200);
     expect(getResponse.body.success).toBe(true);
