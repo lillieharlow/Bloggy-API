@@ -14,7 +14,7 @@ RUN npm ci --omit=dev
 COPY . .
 
 # Expose API port the app runs on (inside container)
-EXPOSE 3000
+EXPOSE 5000
 
 # Start the application
 CMD ["npm", "start"]
