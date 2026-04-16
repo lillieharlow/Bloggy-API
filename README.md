@@ -1,16 +1,14 @@
 # Bloggy-API
 
-A simple multi-user, headless Content Management System (CMS) backend built with Node.js, Express, and MongoDB. Bloggy-API enables authenticated users to manage their blog posts and profiles through a RESTful API.
-
-Bloggy-API provides RESTful endpoints to create, read, update, and delete posts and comments with authentication.
-
-Tech Stack: Node.js · Express · MongoDB Atlas · Mongoose · JWT
+A simple multi-user, headless Content Management System (CMS) backend built with Node.js, Express, and MongoDB.
+**Bloggy-API is backend-only and does not include a UI.**
 
 <hr>
 
 ## Table of Contents
 
 - [Target Audience / User Stories](#target-audience--user-stories)
+- [Accessing the API](#accessing-the-api)
 - [Quick Setup](#quick-setup)
 - [Hardware Requirements](#hardware-requirements)
 - [Dependencies](#dependencies)
@@ -27,6 +25,15 @@ Tech Stack: Node.js · Express · MongoDB Atlas · Mongoose · JWT
 - Developers: Building web or mobile apps that need a backend for blogging.
 - Bloggers: Programmatically managing posts, comments, and user profiles.
 - Startups and agencies: Creating tools for content management and social features.
+
+## Accessing the API
+
+Bloggy-API is a backend-only REST API; it does not include a web front end.  
+**To interact with the API, use tools such as [Insomnia](https://insomnia.rest/), [Postman](https://www.postman.com/), or cURL.**
+
+The deployed API can be accessed at: http://bloggy-alb-400513300.ap-southeast-4.elb.amazonaws.com
+
+See [API Endpoints](#api-endpoints) for a full list of supported routes.
 
 ## Quick Setup
 

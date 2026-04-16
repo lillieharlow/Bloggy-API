@@ -23,7 +23,13 @@ const commentsRouter = require('./routes/comments');
 const app = express();
 
 app.use(require('helmet')());
-app.use(require('cors')({ origin: ['http://localhost:3000'], optionsSuccessStatus: 200 })); // Add render URL when deployed
+app.use(require('cors')({
+  origin: [
+    'http://localhost:3000',
+    'http://bloggy-alb-400513300.ap-southeast-4.elb.amazonaws.com'
+  ],
+  optionsSuccessStatus: 200,
+}));
 app.use(express.json());
 
 // ========== Rate Limiting Middleware ==========
