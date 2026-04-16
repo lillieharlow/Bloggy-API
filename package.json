@@ -4,7 +4,7 @@
   "description": "Bloggy-API is a simple personal CMS backend built with Node.js, Express, and MongoDB that enables authenticated users to manage blog posts through a RESTful API. <hr>",
   "main": "index.js",
   "scripts": {
-    "start": "dotenv -e .env -- node src/server.js",
+    "start": "node src/server.js",
     "dev": "dotenv -e .env -- node --watch src/server.js",
     "lint": "eslint .",
     "test": "jest",
