@@ -17,7 +17,7 @@ const app = require('./index.js');
 
 
 // eslint-disable-next-line no-undef
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 // eslint-disable-next-line no-undef
 const MONGODB_URI = process.env.MONGODB_URI;
 
