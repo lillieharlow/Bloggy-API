@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
-# Use node.js 20 Alpine image for production environment
-FROM node:20-alpine
+# Use node.js 24 Alpine image for production environment
+FROM node:24-alpine
 
 # Set working directory inside the container
 WORKDIR /app
