@@ -3,18 +3,16 @@
 // - POST /api/v1/auth/login succeeds for a registered user
 // - POST /api/v1/auth/signup rejects duplicate email
 
-/* global jest */
 jest.setTimeout(20000);
 
-/* eslint-disable no-undef */
 const mongoose = require('mongoose');
 const request = require('supertest');
 const app = require('../src/index');
 const User = require('../src/models/User');
 const Post = require('../src/models/Post');
-const { buildUniqueUser } = require('./factories');
+const { buildUniqueUser, BASE_TEST_DB_URI, buildSuiteDbUri } = require('./utils');
 
-const TEST_DB_URI = process.env.MONGODB_TEST_URI || 'mongodb://127.0.0.1:27017/bloggy_test';
+const TEST_DB_URI = buildSuiteDbUri(BASE_TEST_DB_URI, 'auth');
 
 describe('Auth routes', () => {
   beforeAll(async () => {

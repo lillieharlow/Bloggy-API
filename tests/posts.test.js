@@ -3,18 +3,16 @@
 // - GET /api/v1/posts returns 200 with expected response shape
 // - Full post lifecycle: create, retrieve, and delete with auth
 
-/* global jest */
 jest.setTimeout(20000);
 
-/* eslint-disable no-undef */
 const mongoose = require('mongoose');
 const request = require('supertest');
 const app = require('../src/index');
 const Post = require('../src/models/Post');
 const User = require('../src/models/User');
-const { buildUniqueUser } = require('./factories');
+const { buildUniqueUser, BASE_TEST_DB_URI, buildSuiteDbUri } = require('./utils');
 
-const TEST_DB_URI = process.env.MONGODB_TEST_URI || 'mongodb://127.0.0.1:27017/bloggy_test';
+const TEST_DB_URI = buildSuiteDbUri(BASE_TEST_DB_URI, 'posts');
 
 describe('Posts routes', () => {
   beforeAll(async () => {

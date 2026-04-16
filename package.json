@@ -1,7 +1,7 @@
 {
   "name": "bloggy-api",
   "version": "1.0.0",
-  "description": "Bloggy-API is a simple personal CMS backend built with Node.js, Express, and MongoDB that enables authenticated users to manage blog posts through a RESTful API. <hr>",
+  "description": "Bloggy-API is a simple, personal CMS backend API to manage blog posts. Built with Node.js, Express, and MongoDB.",
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
