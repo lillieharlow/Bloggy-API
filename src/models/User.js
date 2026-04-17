@@ -19,8 +19,8 @@ const ProfileSchema = mongoose.Schema({
   },
   profileImage: {
     type: String,
-    validate: {
-      validator: function (value) {
+      validate: {
+      validator: (value) => {
         if (!value) return true;
         return (
           validator.isURL(value, { require_protocol: true }) &&
@@ -34,27 +34,21 @@ const ProfileSchema = mongoose.Schema({
     twitter: {
       type: String,
       validate: {
-        validator: function (v) {
-          return !v || validator.isURL(v);
-        },
+        validator: (v) => !v || validator.isURL(v),
         message: 'Invalid Twitter URL',
       },
     },
     linkedin: {
       type: String,
       validate: {
-        validator: function (v) {
-          return !v || validator.isURL(v);
-        },
+        validator: (v) => !v || validator.isURL(v),
         message: 'Invalid LinkedIn URL',
       },
     },
     github: {
       type: String,
       validate: {
-        validator: function (v) {
-          return !v || validator.isURL(v);
-        },
+        validator: (v) => !v || validator.isURL(v),
         message: 'Invalid GitHub URL',
       },
     },
@@ -101,7 +95,7 @@ UserSchema.pre('save', async function () {
 
 // ========== JSON Transformation ==========
 UserSchema.set('toJSON', {
-  transform: (doc, ret) => {
+  transform: (_doc, ret) => {
     delete ret.password;
     return ret;
   },

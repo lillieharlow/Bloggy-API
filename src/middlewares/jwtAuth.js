@@ -23,7 +23,6 @@ const jwtAuth = (request, response, next) => {
 
   const token = header.split(' ')[1];
   try {
-    // eslint-disable-next-line no-undef
     request.user = jwt.verify(token, process.env.JWT_SECRET);
     next();
   } catch {

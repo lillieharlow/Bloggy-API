@@ -54,7 +54,6 @@ router.post('/login', async (request, response, next) => {
     }
     const token = jwt.sign(
       { userId: user._id, email: user.email },
-      // eslint-disable-next-line no-undef
       process.env.JWT_SECRET,
       { expiresIn: '3d' }
     );
