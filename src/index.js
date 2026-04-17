@@ -26,7 +26,7 @@ app.use(require('helmet')());
 app.use(require('cors')({
   origin: [
     'http://localhost:3000',
-    'http://bloggy-alb-400513300.ap-southeast-4.elb.amazonaws.com'
+    'http://bloggy-alb-1205022993.ap-southeast-2.elb.amazonaws.com'
   ],
   optionsSuccessStatus: 200,
 }));
