@@ -31,7 +31,7 @@ A simple multi-user, headless Content Management System (CMS) backend built with
 Bloggy-API is a backend-only REST API; it does not include a web front end.  
 **To interact with the API, use tools such as [Insomnia](https://insomnia.rest/), [Postman](https://www.postman.com/), or cURL.**
 
-The deployed API can be accessed at: http://bloggy-alb-400513300.ap-southeast-4.elb.amazonaws.com
+The deployed API can be accessed at: http://bloggy-alb-1205022993.ap-southeast-2.elb.amazonaws.com
 
 See [API Endpoints](#api-endpoints) for a full list of supported routes.
 
