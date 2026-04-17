@@ -94,6 +94,14 @@ Core models:
 
 ## API Endpoints
 
+### App / System
+
+| Method | Endpoint | Auth | Description |
+| ------ | -------- | ---- | ----------- |
+| GET    | /        | No   | API welcome/status message |
+| GET    | /health  | No   | Database connection health |
+| ALL    | *        | No   | Catch-all 404 handler for unknown routes |
+
 ### Auth (/api/v1/auth)
 
 | Method | Endpoint            | Description    |
@@ -194,18 +202,24 @@ Steps:
 - Login and push image to AWS ECR
 - Trigger ECS service to pull and run latest image
 
-Both workflows require GitHub secrets for AWS and app credentials:
+GitHub secrets used directly by workflow files:
 
-| Secret Name           | Purpose (do not commit these)           |
-| --------------------- | --------------------------------------- |
-| AWS_ACCESS_KEY_ID     | AWS user for ECR/ECS (least privilege)  |
-| AWS_SECRET_ACCESS_KEY | AWS secret key for deployment           |
-| AWS_REGION            | AWS region (for example ap-southeast-2) |
-| ECR_REGISTRY          | URI of the AWS ECR repository           |
-| ECS_CLUSTER           | ECS cluster name                        |
-| ECS_SERVICE           | ECS Fargate service name                |
-| MONGODB_URI           | MongoDB Atlas connection string |
-| JWT_SECRET            | Secret key for JWT auth                 |
+| Secret Name           | Used By    | Purpose (do not commit these)          |
+| --------------------- | ---------- | -------------------------------------- |
+| AWS_ACCESS_KEY_ID     | deploy.yml | AWS user for ECR/ECS (least privilege) |
+| AWS_SECRET_ACCESS_KEY | deploy.yml | AWS secret key for deployment          |
+| AWS_REGION            | deploy.yml | AWS region (for example ap-southeast-2) |
+| ECR_REGISTRY          | deploy.yml | URI of the AWS ECR registry            |
+| ECR_REPOSITORY        | deploy.yml | ECR repository name                    |
+| ECS_CLUSTER           | deploy.yml | ECS cluster name                       |
+| ECS_SERVICE           | deploy.yml | ECS Fargate service name               |
+
+Runtime secrets:
+
+| Runtime Secret | Used By App | Purpose |
+| -------------- | ----------- | ------- |
+| MONGODB_URI    | server.js   | MongoDB Atlas connection string |
+| JWT_SECRET     | auth/jwt middleware | Secret key for JWT signing and verification |
 
 To set these: GitHub repository Settings > Secrets and variables > Actions.
 
@@ -214,7 +228,7 @@ To set these: GitHub repository Settings > Secrets and variables > Actions.
 A sample file is provided as .env.example. Do not commit real secrets.
 
 ```env
-PORT=           # e.g. 7000
+PORT=           # e.g. 7000 (if you want a different port for local use)
 MONGODB_URI=    # Your full MongoDB Atlas connection URI
 JWT_SECRET=     # Secret key for signing JWTs
 ```
@@ -227,7 +241,10 @@ Deployment workflow: [`.github/workflows/deploy.yml`](.github/workflows/deploy.y
 
 This workflow:
 - Runs automatically after successful CI on the main branch, on manual dispatch, or on a scheduled basis.
-- Builds and tags a new Docker image for Bloggy-API.
+- Builds one Docker image and pushes three deployment tags for revision tracking:
+   - `production` (environment tag)
+   - `v<package.json version>` (for example `v1.0.0`)
+   - `sha-<short-commit-sha>` (8-character commit tag)
 - Pushes the image to AWS ECR.
 - Updates the running ECS service to deploy the latest image version.
 
