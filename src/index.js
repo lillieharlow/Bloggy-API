@@ -5,7 +5,7 @@
  * - Initialize Express app and core security middleware (helmet, cors, rate-limit)
  * - Configure JSON body parsing
  * - Mount versioned API routes (/api/v1/*)
- * - Expose health endpoints (/ and /databaseHealth)
+ * - Expose health endpoints (/ and /health)
  * - Register a catch-all 404 handler for unknown routes
  * - Attach the global error handler as the final middleware
  */
@@ -62,8 +62,8 @@ app.get('/', (_request, response) => {
   });
 });
 
-// ========== GET /databaseHealth — Database Status (Public) ==========
-app.get('/databaseHealth', (_request, response) => {
+// ========== GET /health — Database Status (Public) ==========
+app.get('/health', (_request, response) => {
   response.status(200).json({
     success: true,
     models: mongoose.connection.modelNames(),
