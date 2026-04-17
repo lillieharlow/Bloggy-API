@@ -7,7 +7,6 @@
  * Environment:
  * - PORT: Render auto-assigns (10000+)
  * - MONGODB_URI: MongoDB Atlas connection string
- * - Local dev: mongodb://localhost:27017/bloggy
  *
  * Usage: npm run dev → node --watch src/server.js
  */
@@ -23,8 +22,8 @@ const startServer = async () => {
   try {
     await mongoose.connect(MONGODB_URI);
     console.log('Connected to Database!');
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+    app.listen(PORT, '0.0.0.0',() => {
+      console.log(`Bloggy-API is running on port ${PORT}`);
     });
   } catch (err) {
     console.error('Database connection error:', err);
