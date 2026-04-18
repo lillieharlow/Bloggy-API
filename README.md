@@ -306,8 +306,10 @@ Include these screenshots in order:
    ![screenshot of CI artifact test-results](./screenshots/test-results.png)
    ![screenshot of CI artifact ci-test-summary](./screenshots/ci-test-summary.png)
 
-4. Successful Deploy workflow run: shows CI artifact download (workflow_run), ECR push, ECS update, and `deployment-metadata` artifact upload
+4. Successful Deploy workflow run: shows CI artifact download (workflow_run), ECR push, ECS update, and artifact upload
    ![screenshot of deploy workflow run](./screenshots/deploy-success.png)
+   ![screenshot of CI artifact download](./screenshots/ci-artifact.png)
+   ![screenshot of deploy artifact metadata](./screenshots/deploy-artifact-1.png)
 
 5. AWS ECR UI: shows latest image tag
    ![screenshot of AWS ECR repo with latest image](./screenshots/ecr-latest.png)
