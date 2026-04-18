@@ -6,10 +6,9 @@ dist/
 
 # Version control
 .git/
-.gitignore
 
 # Environment / secrets
-.env
+.env*
 !.env.example
 
 # Logs
@@ -24,6 +23,8 @@ coverage/
 
 # Test report artifacts
 test-results.xml
+ci-test-summary.log
+deployment-metadata.json
 
 # OS & IDE
 .DS_Store

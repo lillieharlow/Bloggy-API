@@ -6,10 +6,11 @@ dist/
 
 # Version control
 .git/
-.gitignore
+.github/
 
 # Environment / secrets
 .env*
+!.env.example
 
 # Logs
 *.log
@@ -20,6 +21,20 @@ pnpm-debug.log*
 # Coverage output
 coverage/
 .nyc_output/
+
+# Test and development files
+tests/
+test-results.xml
+ci-test-summary.log
+deployment-metadata.json
+
+# Documentation and local editor config
+README.md
+LICENSE
+screenshots/
+.prettierrc
+eslint.config.mjs
+jest.config.js
 
 # OS & IDE
 .DS_Store

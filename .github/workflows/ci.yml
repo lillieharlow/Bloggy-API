@@ -47,7 +47,7 @@ jobs:
         run: npm run lint
 
       - name: Run test suite with JUnit output
-        run: npm test -- --ci --reporters=default --reporters=jest-junit
+        run: npm test -- --ci
 
       - name: Build custom CI test summary log
         run: |

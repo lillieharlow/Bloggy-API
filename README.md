@@ -179,7 +179,7 @@ Authenticated:
 
 - Create, update, and delete posts
 - Create, update, and delete profiles
-- Delete comments (if author)
+- Delete comments
 
 ## DevOps, CI/CD, and AWS Deployment
 
@@ -216,9 +216,11 @@ Steps:
 - Install dependencies
 - Run lint and automated test suite (Jest)
 - Generate formatted JUnit XML test report
+- Build a custom CI test summary log file (`ci-test-summary.log`)
 - Upload test report as a persistent artifact
 - Run test coverage
 - Upload coverage report as an artifact
+- Export workflow definitions as downloadable artifacts
 
 2. Continuous Deployment: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
 
@@ -231,12 +233,14 @@ Triggers:
 Steps:
 
 - Checkout the exact commit associated with the triggering event
+- Download CI artifacts when deployment is triggered by a successful CI run
 - Build one Docker image and push three deployment tags for revision tracking:
    - `production` (environment tag)
    - `v<package.json version>` (for example `v1.0.0`)
    - `sha-<short-commit-sha>` (8-character commit tag)
 - Login and push the image tags to AWS ECR
 - Trigger ECS service to pull and run latest image
+- Upload deployment metadata as a persistent artifact
 
 GitHub secrets used directly by workflow files:
 
@@ -275,7 +279,7 @@ Update .env with your real values for local development and testing.
 ### Testing and Logs
 
 - CI runs tests on every push, pull request, scheduled trigger, and manual dispatch.
-- Test results are formatted and uploaded as an artifact (for example test-results.xml).
+- Test results are formatted and uploaded as artifacts (for example `test-results.xml`, `ci-test-summary.log`, and coverage reports).
 - Full test logs can be downloaded from the GitHub Actions Artifacts section.
 
 ### Deployment Steps
@@ -283,7 +287,7 @@ Update .env with your real values for local development and testing.
 1. Set all required GitHub secrets.
 2. Push or merge changes to main, or trigger deployment manually.
 3. CI workflow runs lint/tests/coverage and uploads artifacts.
-4. Deploy workflow builds and pushes Docker tags to ECR, then forces ECS redeployment.
+4. Deploy workflow can reuse CI artifacts (when triggered by `workflow_run`), builds and pushes Docker tags to ECR, then forces ECS redeployment.
 5. Scheduled/manual deploy runs are allowed by workflow rules (even without a fresh CI run).
 6. API logs are collected in AWS CloudWatch.
 
@@ -297,11 +301,12 @@ Include these screenshots in order:
 2. Successful test run: shows all test run and pass
    ![screenshot of successful test run and pass](./screenshots/test-success.png)
 
-3. Artifact download pane: shows test-results.xml
-   ![screenshot of test artifact in GitHub Actions](./screenshots/test-artifact-1.png)
-   ![screenshot of test artifact in test-results.xml](./screenshots/test-artifact-2.png)
+3. CI artifact download: shows workflow artifacts
+   ![screenshot of CI artifacts in GitHub Actions](./screenshots/test-artifact-1.png)
+   ![screenshot of CI artifact test-results](./screenshots/test-results.png)
+   ![screenshot of CI artifact ci-test-summary](./screenshots/ci-test-summary.png)
 
-4. Successful Deploy workflow run: shows ECR push and ECS update
+4. Successful Deploy workflow run: shows CI artifact download (workflow_run), ECR push, ECS update, and `deployment-metadata` artifact upload
    ![screenshot of deploy workflow run](./screenshots/deploy-success.png)
 
 5. AWS ECR UI: shows latest image tag
