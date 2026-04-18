@@ -293,8 +293,6 @@ Update .env with your real values for local development and testing.
 
 ## Screenshots
 
-Include these screenshots in order:
-
 1. Successful CI workflow run: shows test job and artifact upload
    ![screenshot of successful CI workflow run](./screenshots/ci-success.png)
 
