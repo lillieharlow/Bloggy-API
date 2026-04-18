@@ -9,6 +9,7 @@ A simple multi-user, headless Content Management System (CMS) backend built with
 
 - [Target Audience / User Stories](#target-audience--user-stories)
 - [Accessing the API](#accessing-the-api)
+- [Prerequisites](#prerequisites)
 - [Quick Setup](#quick-setup)
 - [Hardware Requirements](#hardware-requirements)
 - [Dependencies](#dependencies)
@@ -34,6 +35,12 @@ Bloggy-API is a backend-only REST API; it does not include a web front end.
 The deployed API can be accessed at: http://bloggy-alb-1205022993.ap-southeast-2.elb.amazonaws.com
 
 See [API Endpoints](#api-endpoints) for a full list of supported routes.
+
+## Prerequisites
+
+- Node.js (recommended: v24 to match CI environment)
+- npm
+- A running MongoDB instance (local MongoDB or MongoDB Atlas)
 
 ## Quick Setup
 
@@ -61,6 +68,28 @@ cp .env.example .env
 
 ```bash
 npm start
+```
+
+5. Verify the API is running:
+
+```bash
+curl http://localhost:5000/
+curl http://localhost:5000/health
+```
+
+You should receive JSON responses from both endpoints.
+
+For live-reload during development, use:
+
+```bash
+npm run dev
+```
+
+Optional quality checks:
+
+```bash
+npm run lint
+npm test
 ```
 
 ## Hardware Requirements
@@ -135,7 +164,7 @@ Core models:
 | ------ | ----------------------------------------- | ------ | -------------- |
 | GET    | /api/v1/posts/:postId/comments            | No     | List comments  |
 | POST   | /api/v1/posts/:postId/comments            | No     | Add comment    |
-| DELETE | /api/v1/posts/:postId/comments/:commentId | Author | Delete comment |
+| DELETE | /api/v1/posts/:postId/comments/:commentId | Yes | Delete comment |
 
 ## MVP Features
 
@@ -172,23 +201,26 @@ Bloggy-API uses GitHub Actions for automation and continuous delivery, deploying
 
 ### Workflows
 
-1. Continuous Integration (ci.yml)
+1. Continuous Integration: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 
 Triggers:
 
 - push to main
 - pull_request
 - weekly scheduled run (cron)
+- manual dispatch (workflow_dispatch)
 
 Steps:
 
 - Checkout code
 - Install dependencies
-- Run lint and automated test suite (npm test)
+- Run lint and automated test suite (Jest)
 - Generate formatted JUnit XML test report
-- Upload report as a persistent artifact
+- Upload test report as a persistent artifact
+- Run test coverage
+- Upload coverage report as an artifact
 
-2. Continuous Deployment (deploy.yml)
+2. Continuous Deployment: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
 
 Triggers:
 
@@ -198,8 +230,12 @@ Triggers:
 
 Steps:
 
-- Build Docker image
-- Login and push image to AWS ECR
+- Checkout the exact commit associated with the triggering event
+- Build one Docker image and push three deployment tags for revision tracking:
+   - `production` (environment tag)
+   - `v<package.json version>` (for example `v1.0.0`)
+   - `sha-<short-commit-sha>` (8-character commit tag)
+- Login and push the image tags to AWS ECR
 - Trigger ECS service to pull and run latest image
 
 GitHub secrets used directly by workflow files:
@@ -231,26 +267,14 @@ A sample file is provided as .env.example. Do not commit real secrets.
 PORT=           # e.g. 7000 (if you want a different port for local use)
 MONGODB_URI=    # Your full MongoDB Atlas connection URI
 JWT_SECRET=     # Secret key for signing JWTs
+MONGODB_TEST_URI= # Optional: separate URI used by local/CI test runs
 ```
 
 Update .env with your real values for local development and testing.
 
-### Deployment Workflow (deploy.yml)
-
-Deployment workflow: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
-
-This workflow:
-- Runs automatically after successful CI on the main branch, on manual dispatch, or on a scheduled basis.
-- Builds one Docker image and pushes three deployment tags for revision tracking:
-   - `production` (environment tag)
-   - `v<package.json version>` (for example `v1.0.0`)
-   - `sha-<short-commit-sha>` (8-character commit tag)
-- Pushes the image to AWS ECR.
-- Updates the running ECS service to deploy the latest image version.
-
 ### Testing and Logs
 
-- CI runs tests on every push, pull request, and scheduled trigger.
+- CI runs tests on every push, pull request, scheduled trigger, and manual dispatch.
 - Test results are formatted and uploaded as an artifact (for example test-results.xml).
 - Full test logs can be downloaded from the GitHub Actions Artifacts section.
 
@@ -258,9 +282,10 @@ This workflow:
 
 1. Set all required GitHub secrets.
 2. Push or merge changes to main, or trigger deployment manually.
-3. Actions build and test, then deploy to AWS if checks pass.
-4. ECS pulls the correct version from ECR and updates running containers.
-5. API logs are collected in AWS CloudWatch.
+3. CI workflow runs lint/tests/coverage and uploads artifacts.
+4. Deploy workflow builds and pushes Docker tags to ECR, then forces ECS redeployment.
+5. Scheduled/manual deploy runs are allowed by workflow rules (even without a fresh CI run).
+6. API logs are collected in AWS CloudWatch.
 
 ## Screenshots
 
