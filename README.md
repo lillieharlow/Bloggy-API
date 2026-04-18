@@ -102,6 +102,7 @@ npm test
 | Library            | Purpose                        |
 | ------------------ | ------------------------------ |
 | express            | Web framework                  |
+| mongodb            | MongoDB driver                 |
 | mongoose           | MongoDB ODM                    |
 | jsonwebtoken       | JWT authentication             |
 | bcryptjs           | Password hashing               |
@@ -114,8 +115,6 @@ npm test
 Dev dependencies: Jest, ESLint, Prettier, Supertest
 
 ## Database Models
-
-Core models:
 
 - User
 - Post
